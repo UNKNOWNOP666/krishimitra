@@ -26,7 +26,8 @@ const translations = {
         profitTitle: "💰 Profit Comparison", profitSub: "Estimates based on regional data and market averages.", cropH: "Crop", suitH: "Suitability", yieldH: "Yield", costH: "Est. Cost", revH: "Revenue", profitH: "Profit / acre",
         featureTitle: "🌾 Farmer-first features", featureSub: "A strong foundation for modern agriculture.",
         f1: "Soil Health", f1p: "NPK, pH and moisture inputs create a soil suitability profile.", f2: "Weather Intelligence", f2p: "Live weather signals to improve rainfall and temperature planning.", f3: "Land & Disease Vision", f3p: "Visual signals combined with agronomic and weather data.", f4: "Hindi Voice", f4p: "Voice-first assistance makes the platform accessible to everyone.",
-        footer1: "Advanced crop decision support system", footer2: "Data is updated regularly based on local APMC trends and weather signals."
+        footer1: "Advanced crop decision support system", footer2: "Data is updated regularly based on local APMC trends and weather signals.",
+        state: "Jharkhand", liveData: "Live Data", next24: "Next 24 hours", relative: "Relative humidity", surface: "Surface", apmcLive: "APMC Live", commodity: "Commodity", freight: "Freight", distance: "Distance", verified: "Verified", enamHub: "e-NAM Hub", evaluating: "Evaluating agronomic suitability...", alternative: "Strong alternative based on the current farm profile.", lighting: "Lighting:", conclusion: "Conclusion:", analyzingPhoto: "⏳ Analyzing image...", photoDone: "Analyze Photo", thinking: "Thinking...", dry: "Dry", wet: "Wet", kharif: "Kharif", rabi: "Rabi", zaid: "Zaid", lowRainfed: "Low / Rainfed", mediumOption: "Medium", high: "High", redSoil: "Red Soil", lateriteSoil: "Laterite Soil", sandySoil: "Sandy Soil", blackSoil: "Black Soil", micaceousSoil: "Micaceous Soil", maize: "🌽 Maize", paddy: "🌾 Paddy", arhar: "🌱 Arhar", wheat: "🌾 Wheat", soybean: "🫘 Soybean", groundnut: "🥜 Groundnut", chickpea: "🫘 Chickpea", mustard: "🌼 Mustard"
     },
     hi: {
         brand: "कृषिमित्र", navAI: "फसल विश्लेषक", navPhoto: "खेत की फोटो", navMarket: "मंडी", navCalc: "कैलकुलेटर", navDistricts: "जिले",
@@ -51,7 +52,8 @@ const translations = {
         profitTitle: "💰 लाभ की तुलना", profitSub: "क्षेत्रीय डेटा और बाजार औसत के आधार पर अनुमान।", cropH: "फसल", suitH: "उपयुक्तता", yieldH: "उपज", costH: "अनुमानित लागत", revH: "राजस्व", profitH: "लाभ / एकड़",
         featureTitle: "🌾 किसान-प्रथम विशेषताएं", featureSub: "आधुनिक कृषि के लिए एक मजबूत नींव।",
         f1: "मिट्टी का स्वास्थ्य", f1p: "NPK, pH और नमी इनपुट एक मिट्टी उपयुक्तता प्रोफ़ाइल बनाते हैं।", f2: "मौसम की जानकारी", f2p: "बारिश और तापमान नियोजन में सुधार के लिए लाइव मौसम संकेत।", f3: "भूमि और रोग दृष्टि", f3p: "कृषि और मौसम डेटा के साथ संयुक्त दृश्य संकेत।", f4: "हिंदी वॉयस", f4p: "मंच को सभी के लिए सुलभ बनाती है।",
-        footer1: "उन्नत फसल निर्णय समर्थन प्रणाली", footer2: "डेटा स्थानीय APMC प्रवृत्तियों और मौसम संकेतों के आधार पर नियमित रूप से अपडेट किया जाता है।"
+        footer1: "उन्नत फसल निर्णय समर्थन प्रणाली", footer2: "डेटा स्थानीय APMC प्रवृत्तियों और मौसम संकेतों के आधार पर नियमित रूप से अपडेट किया जाता है।",
+        state: "झारखंड", liveData: "लाइव डेटा", next24: "अगले 24 घंटे", relative: "सापेक्ष नमी", surface: "सतह", apmcLive: "APMC लाइव", commodity: "वस्तु", freight: "ढुलाई", distance: "दूरी", verified: "सत्यापित", enamHub: "ई-नाम हब", evaluating: "कृषि उपयुक्तता का आकलन हो रहा है...", alternative: "वर्तमान खेत की स्थिति के आधार पर अच्छा विकल्प।", lighting: "रोशनी:", conclusion: "निष्कर्ष:", analyzingPhoto: "⏳ फोटो का विश्लेषण हो रहा है...", photoDone: "फोटो का विश्लेषण करें", thinking: "सोचा जा रहा है...", dry: "सूखा", wet: "गीला", kharif: "खरीफ", rabi: "रबी", zaid: "जायद", lowRainfed: "कम / वर्षा आधारित", mediumOption: "मध्यम", high: "अधिक", redSoil: "लाल मिट्टी", lateriteSoil: "लेटराइट मिट्टी", sandySoil: "बलुई मिट्टी", blackSoil: "काली मिट्टी", micaceousSoil: "अभ्रकी मिट्टी", maize: "🌽 मक्का", paddy: "🌾 धान", arhar: "🌱 अरहर", wheat: "🌾 गेहूं", soybean: "🫘 सोयाबीन", groundnut: "🥜 मूंगफली", chickpea: "🫘 चना", mustard: "🌼 सरसों"
     }
 };
 
@@ -75,7 +77,9 @@ const staticCrops = {
 };
 
 let toastTimer;
+let currentLanguage = "en";
 const byId = id => document.getElementById(id);
+const text = key => translations[currentLanguage]?.[key] || translations.en[key] || key;
 
 function showToast(message) {
     const toast = byId("toast");
@@ -87,12 +91,37 @@ function showToast(message) {
 }
 
 function applyTranslations(lang) {
+    currentLanguage = lang;
     document.querySelectorAll("[data-i18n]").forEach(el => {
         const key = el.getAttribute("data-i18n");
         if (translations[lang] && translations[lang][key]) {
             el.textContent = translations[lang][key];
         }
     });
+    translateFormOptions();
+    renderDistricts();
+    updateDistrict(byId("district")?.value || "Ranchi");
+}
+
+function translateFormOptions() {
+    const optionKeys = {
+        season: { Kharif: "kharif", Rabi: "rabi", Zaid: "zaid" },
+        soil: { "Red Soil": "redSoil", "Laterite Soil": "lateriteSoil", "Sandy Soil": "sandySoil", "Black Soil": "blackSoil", "Micaceous Soil": "micaceousSoil" },
+        water: { Low: "lowRainfed", Medium: "mediumOption", High: "high" },
+        calcCrop: { Maize: "maize", Paddy: "paddy", Arhar: "arhar", Wheat: "wheat", Soybean: "soybean", Groundnut: "groundnut", Chickpea: "chickpea", Mustard: "mustard" }
+    };
+    Object.entries(optionKeys).forEach(([id, keys]) => {
+        const select = byId(id);
+        if (!select) return;
+        select.querySelectorAll("option").forEach(option => {
+            if (keys[option.value]) option.textContent = text(keys[option.value]);
+        });
+    });
+    const rangeLabels = byId("moistVal")?.parentElement?.children;
+    if (rangeLabels) {
+        rangeLabels[0].textContent = text("dry");
+        rangeLabels[2].textContent = text("wet");
+    }
 }
 
 function renderDistricts() {
@@ -100,14 +129,15 @@ function renderDistricts() {
     const districtGrid = byId("districtGrid");
 
     if (districtSelect) {
+        const selectedDistrict = districtSelect.value || "Ranchi";
         districtSelect.innerHTML = districts.map(name => `<option value="${name}">${name}</option>`).join("");
-        districtSelect.value = "Ranchi";
+        districtSelect.value = districts.includes(selectedDistrict) ? selectedDistrict : "Ranchi";
     }
 
     if (districtGrid) {
         districtGrid.innerHTML = districts.map(name => 
             `<button class="district-btn" type="button" data-district="${name}">
-                <strong>${name}</strong><span>Jharkhand</span>
+                <strong>${name}</strong><span>${text("state")}</span>
             </button>`
         ).join("");
 
@@ -124,10 +154,13 @@ function updateDistrict(name) {
     const seasonEl = byId("season");
     const season = seasonEl ? seasonEl.value : "Kharif";
 
-    if (byId("heroDistrict")) byId("heroDistrict").textContent = `${name} • ${season}`;
-    if (byId("weatherLocation")) byId("weatherLocation").textContent = `${name}, Jharkhand`;
+    const seasonKey = { Kharif: "kharif", Rabi: "rabi", Zaid: "zaid" }[season];
+    if (byId("heroDistrict")) byId("heroDistrict").textContent = `${name} • ${seasonKey ? text(seasonKey) : season}`;
+    if (byId("weatherLocation")) byId("weatherLocation").textContent = `${name}, ${text("state")}`;
     if (byId("districtTitle2")) byId("districtTitle2").textContent = name;
-    if (byId("districtAdvice")) byId("districtAdvice").textContent = `${name} agro-climatic zone parameters loaded.`;
+    if (byId("districtAdvice")) byId("districtAdvice").textContent = currentLanguage === "hi"
+        ? `${name} कृषि-जलवायु क्षेत्र के मापदंड लोड किए गए।`
+        : `${name} agro-climatic zone parameters loaded.`;
 
     document.querySelectorAll(".district-btn").forEach(button => {
         button.classList.toggle("active", button.dataset.district === name);
@@ -145,10 +178,10 @@ async function fetchWeather(district) {
 
         const boxes = document.querySelectorAll(".weather-box");
         if (boxes.length >= 4) {
-            boxes[0].innerHTML = `🌡️ <span data-i18n="temperature">Temperature</span> <b>${data.temperature}°C</b> <small>Live Data</small>`;
-            boxes[1].innerHTML = `🌧️ <span data-i18n="rain">Rain chance</span> <b>${data.rain_chance}%</b> <small>Next 24 Hours</small>`;
-            boxes[2].innerHTML = `💧 <span data-i18n="humidity">Humidity</span> <b>${data.humidity}%</b> <small>Relative</small>`;
-            boxes[3].innerHTML = `💨 <span data-i18n="wind">Wind</span> <b>${data.windspeed} km/h</b> <small>Surface</small>`;
+            boxes[0].innerHTML = `🌡️ <span>${text("temperature")}</span> <b>${data.temperature}°C</b> <small>${text("liveData")}</small>`;
+            boxes[1].innerHTML = `🌧️ <span>${text("rain")}</span> <b>${data.rain_chance}%</b> <small>${text("next24")}</small>`;
+            boxes[2].innerHTML = `💧 <span>${text("humidity")}</span> <b>${data.humidity}%</b> <small>${text("relative")}</small>`;
+            boxes[3].innerHTML = `💨 <span>${text("wind")}</span> <b>${data.windspeed} km/h</b> <small>${text("surface")}</small>`;
         }
     } catch (err) {
         console.warn("Weather API not connected, showing representative regional data.");
@@ -167,12 +200,12 @@ async function fetchMarket(district) {
                 <div class="market-card best">
                     <div class="market-top">
                         <span class="market-name">${data.name}</span>
-                        <span class="best-label">APMC Live</span>
+                        <span class="best-label">${text("apmcLive")}</span>
                     </div>
                     <div class="price">₹${data.price.toLocaleString()} <small>/ quintal</small></div>
                     <div class="market-meta">
-                        <div class="meta">Commodity<b>${data.commodity}</b></div>
-                        <div class="meta">Freight<b>₹${data.freight} (${data.distance} km)</b></div>
+                        <div class="meta">${text("commodity")}<b>${data.commodity}</b></div>
+                        <div class="meta">${text("freight")}<b>₹${data.freight} (${data.distance} km)</b></div>
                     </div>
                 </div>`;
         }
@@ -186,21 +219,21 @@ function renderFallbackMarket(district) {
     if (!container) return;
     container.innerHTML = `
         <div class="market-card best">
-            <div class="market-top"><span class="market-name">${district} Mandi</span><span class="best-label">APMC Live</span></div>
+            <div class="market-top"><span class="market-name">${district} Mandi</span><span class="best-label">${text("apmcLive")}</span></div>
             <div class="price">₹2,250 <small>/ quintal</small></div>
-            <div class="market-meta"><div class="meta">Freight<b>₹800</b></div><div class="meta">Distance<b>18 km</b></div></div>
+            <div class="market-meta"><div class="meta">${text("freight")}<b>₹800</b></div><div class="meta">${text("distance")}<b>18 km</b></div></div>
         </div>
         <div class="market-card">
-            <div class="market-top"><span class="market-name">e-NAM Hub</span><span class="pill">Verified</span></div>
+            <div class="market-top"><span class="market-name">${text("enamHub")}</span><span class="pill">${text("verified")}</span></div>
             <div class="price">₹2,310 <small>/ quintal</small></div>
-            <div class="market-meta"><div class="meta">Freight<b>₹1,600</b></div><div class="meta">Distance<b>64 km</b></div></div>
+            <div class="market-meta"><div class="meta">${text("freight")}<b>₹1,600</b></div><div class="meta">${text("distance")}<b>64 km</b></div></div>
         </div>`;
 }
 
 async function analyze() {
     const recContainer = byId("recommendations");
     if (recContainer) {
-        recContainer.innerHTML = '<div class="loader">Evaluating agronomic suitability...</div>';
+        recContainer.innerHTML = `<div class="loader">${text("evaluating")}</div>`;
     }
 
     const payload = {
@@ -259,7 +292,7 @@ function renderCropResults(data) {
                     <span class="pill">${Number(item.score).toFixed(1)}% Match</span>
                 </div>
                 <div class="bar"><div class="fill" style="width:${item.score}%"></div></div>
-                <small>${index === 0 ? data.reason : "Strong alternative based on the current farm profile."}</small>
+                <small>${index === 0 ? data.reason : text("alternative")}</small>
             </div>
         `).join("");
     }
@@ -337,7 +370,7 @@ async function photoAnalyze() {
     const button = document.querySelector("#photo .analyze");
     if (button) {
         button.disabled = true;
-        button.textContent = "⏳ Analyzing image spectrum...";
+        button.textContent = text("analyzingPhoto");
     }
 
     const formData = new FormData();
@@ -358,8 +391,8 @@ async function photoAnalyze() {
         if (checks.length >= 4) {
             checks[0].innerHTML = `🌱 <b data-i18n="vegetation">Vegetation:</b> <br><span>${data.vegetation}</span>`;
             checks[1].innerHTML = `🟫 <b data-i18n="soilLook">Soil appearance:</b> <br><span>${data.soil_appearance}</span>`;
-            checks[2].innerHTML = `☀️ <b>Lighting:</b> <br><span>${data.lighting}</span>`;
-            checks[3].innerHTML = `🌾 <b data-i18n="cropMatch">Conclusion:</b> <br><span>${data.conclusion}</span>`;
+            checks[2].innerHTML = `☀️ <b>${text("lighting")}</b> <br><span>${data.lighting}</span>`;
+            checks[3].innerHTML = `🌾 <b>${text("conclusion")}</b> <br><span>${data.conclusion}</span>`;
         }
         showToast("Image processed successfully.");
     } catch (err) {
@@ -368,7 +401,7 @@ async function photoAnalyze() {
     } finally {
         if (button) {
             button.disabled = false;
-            button.textContent = "Analyze Photo";
+            button.textContent = text("photoDone");
         }
     }
 }
@@ -423,7 +456,7 @@ async function sendChatMessage() {
 
     const typingMessage = document.createElement("div");
     typingMessage.className = "chat-message bot";
-    typingMessage.textContent = "Thinking...";
+    typingMessage.textContent = text("thinking");
     messages.appendChild(typingMessage);
     messages.scrollTop = messages.scrollHeight;
 
