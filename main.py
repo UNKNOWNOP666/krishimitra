@@ -1,5 +1,6 @@
 from fastapi import FastAPI, HTTPException, UploadFile, File
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import FileResponse
 from pydantic import BaseModel
 import asyncio
 import base64
@@ -12,9 +13,36 @@ from urllib.request import Request, urlopen
 
 MAX_IMAGE_BYTES = 8 * 1024 * 1024
 ALLOWED_IMAGE_TYPES = {"image/jpeg", "image/png", "image/webp"}
+DEFAULT_GEMINI_MODELS = ["gemini-2.5-flash", "gemini-2.0-flash", "gemini-2.0-flash-lite"]
 
 # Initialize the API
 app = FastAPI(title="KrishiMitra API")
+
+
+@app.get("/")
+def root():
+    return FileResponse("index.html", media_type="text/html")
+
+
+@app.get("/health")
+def health():
+    return {"status": "healthy"}
+
+
+@app.get("/index.html", include_in_schema=False)
+def frontend_index():
+    return FileResponse("index.html", media_type="text/html")
+
+
+@app.get("/sadf.js", include_in_schema=False)
+def frontend_script():
+    return FileResponse("sadf.js", media_type="application/javascript")
+
+
+@app.get("/sda.css", include_in_schema=False)
+def frontend_styles():
+    return FileResponse("sda.css", media_type="text/css")
+
 
 # Enable CORS so your frontend (index.html) can fetch data from this backend
 app.add_middleware(
@@ -171,6 +199,27 @@ def parse_json_response(text: str):
     return json.loads(cleaned)
 
 
+def discover_gemini_models(api_key: str):
+    request = Request(
+        "https://generativelanguage.googleapis.com/v1beta/models",
+        headers={"x-goog-api-key": api_key},
+        method="GET"
+    )
+    with urlopen(request, timeout=20) as response:
+        payload = json.loads(response.read().decode("utf-8"))
+    models = []
+    for model in payload.get("models", []):
+        methods = model.get("supportedGenerationMethods", [])
+        name = model.get("name", "").removeprefix("models/")
+        if "generateContent" in methods and name and ("flash" in name.lower() or "pro" in name.lower()):
+            models.append(name)
+    preferred = os.getenv("GEMINI_MODEL")
+    ordered = [preferred] if preferred else []
+    ordered += [name for name in DEFAULT_GEMINI_MODELS if name in models]
+    ordered += [name for name in models if name not in ordered]
+    return list(dict.fromkeys(ordered))
+
+
 def normalize_soil_analysis(value: dict):
     allowed = {
         "soil_type": value.get("soil_type") or "",
@@ -214,20 +263,37 @@ Only describe soil type, color, texture, visible crusting, stones, erosion, stan
         ]}],
         "generationConfig": {"temperature": 0, "responseMimeType": "application/json", "maxOutputTokens": 700}
     }).encode("utf-8")
-    request = Request(
-        "https://generativelanguage.googleapis.com/v1beta/models/gemini-flash-latest:generateContent",
-        data=request_body,
-        headers={"Content-Type": "application/json", "x-goog-api-key": api_key},
-        method="POST"
-    )
     try:
-        result = await asyncio.to_thread(lambda: urlopen(request, timeout=45).read().decode("utf-8"))
-        response = json.loads(result)
-        text = response["candidates"][0]["content"]["parts"][0]["text"]
-        return normalize_soil_analysis(parse_json_response(text))
-    except (HTTPError, URLError, KeyError, IndexError, TypeError, ValueError, TimeoutError) as error:
-        print(f"Gemini soil image analysis unavailable: {error}")
-        raise HTTPException(status_code=502, detail="Gemini soil image analysis is temporarily unavailable.")
+        models = discover_gemini_models(api_key)
+    except (HTTPError, URLError, KeyError, TypeError, ValueError, TimeoutError) as error:
+        print(f"Gemini model discovery unavailable: {error}")
+        models = [os.getenv("GEMINI_MODEL", DEFAULT_GEMINI_MODELS[0])]
+
+    last_error = "Gemini image analysis failed"
+    for model in models:
+        request = Request(
+            f"https://generativelanguage.googleapis.com/v1beta/models/{model}:generateContent",
+            data=request_body,
+            headers={"Content-Type": "application/json", "x-goog-api-key": api_key},
+            method="POST"
+        )
+        try:
+            result = await asyncio.to_thread(lambda: urlopen(request, timeout=45).read().decode("utf-8"))
+            response = json.loads(result)
+            text = response["candidates"][0]["content"]["parts"][0]["text"]
+            return normalize_soil_analysis(parse_json_response(text))
+        except HTTPError as error:
+            error_body = error.read().decode("utf-8", errors="replace")[:300]
+            last_error = f"{model}: HTTP {error.code} {error_body}"
+            if error.code in {500, 502, 503, 504}:
+                await asyncio.sleep(1)
+                continue
+            if error.code not in {400, 404, 429, 500, 502, 503}:
+                break
+        except (URLError, KeyError, IndexError, TypeError, ValueError, TimeoutError) as error:
+            last_error = f"{model}: {error}"
+    print(f"Gemini soil image analysis unavailable: {last_error}")
+    raise HTTPException(status_code=502, detail="Gemini image analysis unavailable. Check the API key, model access, or quota.")
 
 
 def local_chat_answer(question: str):
