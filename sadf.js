@@ -1,5 +1,5 @@
 // --- CONFIGURATION ---
-const API_BASE = "http://127.0.0.1:8000"; // Centralized Backend URL
+const API_BASE = "https://krishimitra-api-02cf.onrender.com"; // Deployed backend URL
 
 // --- TRANSLATION DICTIONARY ---
 const translations = {
