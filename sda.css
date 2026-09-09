@@ -303,6 +303,56 @@ input[type="range"] {
   margin-top: 20px;
 }
 
+.input-diagnostics {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 8px;
+  margin: 12px 0;
+}
+
+.diagnostic {
+  display: block;
+  padding: 9px 10px;
+  border-left: 4px solid #d9a52f;
+  border-radius: 9px;
+  background: #fff8e8;
+}
+
+.diagnostic b,
+.diagnostic small {
+  display: block;
+}
+
+.diagnostic b {
+  font-size: 12px;
+}
+
+.diagnostic small {
+  color: var(--muted);
+  font-size: 11px;
+  line-height: 1.35;
+  margin-top: 3px;
+}
+
+.diagnostic.good {
+  border-color: var(--g);
+  background: #eef9f0;
+}
+
+.diagnostic.low {
+  border-color: var(--orange);
+}
+
+.diagnostic.high {
+  border-color: var(--red);
+  background: #fff1ee;
+}
+
+.diagnostic.critical {
+  border-color: var(--red);
+  background: #ffe8e3;
+}
+
 .recommend {
   padding: 14px;
   border: 1px solid var(--line);
@@ -360,6 +410,22 @@ input[type="range"] {
   max-height: 300px;
   object-fit: cover;
   border-radius: 14px;
+}
+
+.image-updated {
+  border-color: var(--g);
+  box-shadow: 0 0 0 3px #dff3e5;
+}
+
+.photo-limitations {
+  margin-top: 12px;
+  padding: 12px;
+  border-left: 4px solid var(--orange);
+  border-radius: 8px;
+  background: #fff8eb;
+  color: #69491e;
+  font-size: 13px;
+  line-height: 1.5;
 }
 
 .notice {
@@ -816,12 +882,138 @@ footer {
   line-height: 1.5;
 }
 
+/* Crop guide */
+.crop-guide-tools {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 18px;
+  flex-wrap: wrap;
+}
+
+.crop-guide-tools > input {
+  flex: 1 1 260px;
+  max-width: 420px;
+}
+
+.guide-filters {
+  display: flex;
+  gap: 7px;
+  flex-wrap: wrap;
+}
+
+.guide-filter {
+  padding: 9px 12px;
+  background: #fff;
+  color: var(--dark);
+  border: 1px solid var(--line);
+  font-size: 12px;
+}
+
+.guide-filter.active,
+.guide-filter:hover {
+  background: var(--g);
+  border-color: var(--g);
+  color: #fff;
+}
+
+.crop-guide-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.crop-guide-card {
+  background: #fff;
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  padding: 18px;
+}
+
+.crop-guide-top,
+.crop-yield {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.crop-category,
+.crop-season {
+  color: var(--g);
+  font-size: 11px;
+  font-weight: 900;
+  text-transform: uppercase;
+}
+
+.crop-season {
+  color: var(--muted);
+  text-align: right;
+  text-transform: none;
+}
+
+.crop-guide-card h3 {
+  margin: 10px 0 3px;
+  font-size: 21px;
+}
+
+.crop-districts {
+  color: var(--muted);
+  font-size: 12px;
+  margin: 0 0 14px;
+}
+
+.crop-guide-details {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 9px;
+}
+
+.crop-guide-details div {
+  padding: 10px;
+  background: #f5faf5;
+  border-radius: 10px;
+}
+
+.crop-guide-details small,
+.crop-yield span {
+  display: block;
+  color: var(--muted);
+  font-size: 11px;
+}
+
+.crop-guide-details b {
+  display: block;
+  margin-top: 3px;
+  font-size: 12px;
+  line-height: 1.35;
+}
+
+.crop-yield {
+  margin-top: 12px;
+  padding-top: 11px;
+  border-top: 1px solid var(--line);
+}
+
+.crop-yield strong {
+  color: var(--g);
+  font-size: 16px;
+}
+
+.guide-empty {
+  grid-column: 1 / -1;
+}
+
 /* Responsive */
 @media (max-width: 900px) {
   .hero-in,
   .grid,
   .market-grid,
   .calculator {
+    grid-template-columns: 1fr;
+  }
+
+  .crop-guide-grid {
     grid-template-columns: 1fr;
   }
 
@@ -846,6 +1038,7 @@ footer {
   .form-grid,
   .weather,
   .stats,
+  .input-diagnostics,
   .features,
   .checklist,
   .market-cards,

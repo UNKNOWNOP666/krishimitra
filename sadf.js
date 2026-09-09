@@ -1,5 +1,5 @@
 // --- CONFIGURATION ---
-const API_BASE = "https://krishimitra-api-02cf.onrender.com"; // Deployed backend URL
+const API_BASE = window.KRISHIMITRA_API_BASE || "https://krishimitra-api-02cf.onrender.com";
 
 // --- TRANSLATION DICTIONARY ---
 const translations = {
@@ -89,6 +89,115 @@ const staticCrops = {
     Chickpea: { price: 5900, cost: 17000, yield: 9.5, n: 30, p: 45, k: 45, ph: 6.8, moisture: 35, seasons: ["Rabi"] },
     Mustard: { price: 5600, cost: 17500, yield: 9.0, n: 55, p: 40, k: 50, ph: 6.5, moisture: 38, seasons: ["Rabi"] }
 };
+
+const cropRequirements = {
+    Maize: { n: 100, p: 50, k: 40, phMin: 6.0, phMax: 7.2, moistureMin: 40, moistureMax: 70, soils: ["Red Soil", "Sandy Soil", "Laterite Soil"], water: "Medium", seasons: ["Kharif", "Rabi"] },
+    Paddy: { n: 80, p: 40, k: 40, phMin: 5.5, phMax: 6.5, moistureMin: 65, moistureMax: 95, soils: ["Red Soil", "Laterite Soil", "Micaceous Soil"], water: "High", seasons: ["Kharif"] },
+    Arhar: { n: 20, p: 50, k: 20, phMin: 6.0, phMax: 7.5, moistureMin: 25, moistureMax: 60, soils: ["Red Soil", "Sandy Soil", "Laterite Soil"], water: "Low", seasons: ["Kharif"] },
+    Wheat: { n: 120, p: 60, k: 40, phMin: 6.0, phMax: 7.5, moistureMin: 35, moistureMax: 65, soils: ["Red Soil", "Black Soil", "Micaceous Soil"], water: "High", seasons: ["Rabi"] },
+    Soybean: { n: 45, p: 55, k: 65, phMin: 6.0, phMax: 7.0, moistureMin: 40, moistureMax: 70, soils: ["Red Soil", "Laterite Soil"], water: "Medium", seasons: ["Kharif"] },
+    Groundnut: { n: 20, p: 60, k: 40, phMin: 6.0, phMax: 7.0, moistureMin: 30, moistureMax: 60, soils: ["Red Soil", "Sandy Soil"], water: "Medium", seasons: ["Kharif"] },
+    Chickpea: { n: 20, p: 40, k: 20, phMin: 6.0, phMax: 7.5, moistureMin: 20, moistureMax: 55, soils: ["Red Soil", "Sandy Soil", "Black Soil"], water: "Low", seasons: ["Rabi"] },
+    Mustard: { n: 60, p: 40, k: 40, phMin: 6.0, phMax: 7.5, moistureMin: 20, moistureMax: 55, soils: ["Red Soil", "Sandy Soil", "Black Soil"], water: "Low", seasons: ["Rabi"] }
+};
+
+function scoreRange(value, minimum, maximum, tolerance) {
+    if (value >= minimum && value <= maximum) return 1;
+    return Math.max(0, 1 - (value < minimum ? minimum - value : value - maximum) / tolerance);
+}
+
+function nutrientStatus(value, requirement) {
+    const ratio = requirement ? value / requirement : 1;
+    if (ratio < 0.5) return { label: "Critical low", className: "critical", action: "Increase before sowing" };
+    if (ratio < 0.8) return { label: "Low", className: "low", action: "Plan a soil-test-based correction" };
+    if (ratio <= 1.35) return { label: "Adequate", className: "good", action: "Maintain and split-apply where needed" };
+    return { label: "High", className: "high", action: "Do not add more without a soil test" };
+}
+
+function buildInputDiagnostics(input, crop) {
+    const requirements = cropRequirements[crop];
+    const values = [
+        ["N", input.n, requirements.n], ["P", input.p, requirements.p], ["K", input.k, requirements.k]
+    ];
+    const diagnostics = values.map(([name, value, target]) => {
+        const status = nutrientStatus(value, target);
+        return `<span class="diagnostic ${status.className}"><b>${name}: ${status.label}</b><small>${value} vs ${target} kg/ha · ${status.action}</small></span>`;
+    });
+    const phStatus = input.ph < requirements.phMin ? "Low" : input.ph > requirements.phMax ? "High" : "Good";
+    const moistureStatus = input.moisture < requirements.moistureMin ? "Low" : input.moisture > requirements.moistureMax ? "High" : "Good";
+    diagnostics.push(`<span class="diagnostic ${phStatus === "Good" ? "good" : "low"}"><b>pH: ${phStatus}</b><small>${input.ph} · target ${requirements.phMin}–${requirements.phMax}</small></span>`);
+    diagnostics.push(`<span class="diagnostic ${moistureStatus === "Good" ? "good" : "low"}"><b>Moisture: ${moistureStatus}</b><small>${input.moisture}% · target ${requirements.moistureMin}–${requirements.moistureMax}%</small></span>`);
+    return diagnostics.join("");
+}
+
+function scoreCrop(input, name, crop) {
+    const requirements = cropRequirements[name];
+    const nutrientScore = [input.n, input.p, input.k].reduce((sum, value, index) => {
+        const target = [requirements.n, requirements.p, requirements.k][index];
+        return sum + scoreRange(value, target * 0.8, target * 1.35, target * 0.8);
+    }, 0) / 3;
+    const phScore = scoreRange(input.ph, requirements.phMin, requirements.phMax, 1.5);
+    const moistureScore = scoreRange(input.moisture, requirements.moistureMin, requirements.moistureMax, 45);
+    const seasonScore = requirements.seasons.includes(input.season) ? 1 : 0.25;
+    const soilScore = requirements.soils.includes(input.soil) ? 1 : 0.45;
+    const waterScore = input.irrigation === requirements.water ? 1 : input.irrigation === "High" || requirements.water === "Low" ? 0.7 : 0.5;
+    const score = Math.max(15, Math.min(98, (nutrientScore * 0.4 + phScore * 0.18 + moistureScore * 0.15 + seasonScore * 0.15 + soilScore * 0.07 + waterScore * 0.05) * 100));
+    const limiting = [
+        ["N", input.n / requirements.n], ["P", input.p / requirements.p], ["K", input.k / requirements.k]
+    ].sort((a, b) => a[1] - b[1])[0];
+    const reason = limiting[1] < 0.8 ? `${limiting[0]} is limiting this crop (${Math.round(limiting[1] * 100)}% of its target).` : `${input.season} season, pH ${input.ph}, moisture ${input.moisture}% and soil conditions are the strongest fit.`;
+    return { score, yield: crop.yield, reason };
+}
+
+const cropGuideData = [
+    { name: "Paddy / Rice", category: "Field Crops", districts: "Pakur, Garhwa, East Singhbhum, Ranchi", season: "Kharif", soil: "Fine loam, clay, red sandy loam; pH 5.5–6.5", npk: "80:40:40 kg ha⁻¹", water: "1,100–1,300 mm", period: "110–140 days", sowing: "June 2nd wk–July 4th wk; harvest Oct–Nov", tolerance: "Medium/lowland; low drought tolerance", varieties: "Sahbhagi, IR-64, Birsa Dhan", yield: "1.41–2.93 t ha⁻¹" },
+    { name: "Maize", category: "Field Crops", districts: "Pakur, Garhwa, Koderma", season: "Kharif & Rabi", soil: "Well-drained sandy loam; pH 6.0–7.2", npk: "100:50:40 kg ha⁻¹", water: "500 mm", period: "90–110 days", sowing: "June 3rd wk–July 4th wk; harvest Sept–Oct / Mar", tolerance: "Upland/medium land; moderate drought tolerance", varieties: "Kanchan, HQPM-1", yield: "1.02–2.55 t ha⁻¹" },
+    { name: "Wheat", category: "Field Crops", districts: "Pakur, Garhwa, Palamu", season: "Rabi", soil: "Fine loam to clay; pH 6.0–7.5", npk: "120:60:40 kg ha⁻¹", water: "400–500 mm", period: "110–130 days", sowing: "Nov 3rd wk–Dec 4th wk; harvest Mar–Apr", tolerance: "Medium land/irrigated; low drought tolerance", varieties: "C-306, K-8962", yield: "1.55–2.42 t ha⁻¹" },
+    { name: "Red Gram (Pigeonpea)", category: "Pulses", districts: "Pakur, Garhwa, Palamu", season: "Kharif", soil: "Upland red sandy loam; pH 6.0–7.5", npk: "20:50:20 kg ha⁻¹ (+ B:S 1:20 kg)", water: "Rainfed", period: "150–190 days", sowing: "June 3rd wk–July 2nd wk; harvest Dec–Jan", tolerance: "High", varieties: "Birsa Pigeonpea-1, UPAS-120", yield: "0.56–0.98 t ha⁻¹" },
+    { name: "Chickpea (Gram)", category: "Pulses", districts: "Pakur, Garhwa, Chatra", season: "Rabi", soil: "Sandy loam to clay loam; pH 6.0–7.5", npk: "20:40:20 kg ha⁻¹", water: "Rainfed / limited irrigation", period: "110–130 days", sowing: "Oct 3rd wk–Nov 4th wk; harvest Feb–Mar", tolerance: "High", varieties: "Pant G-114, BG-256", yield: "1.00–1.48 t ha⁻¹" },
+    { name: "Blackgram (Urad)", category: "Pulses", districts: "Pakur, Ranchi, Dumka", season: "Kharif", soil: "Red sandy loam; pH 6.0–7.5", npk: "20:40:20 kg ha⁻¹", water: "Rainfed", period: "70–90 days", sowing: "June 3rd wk–June 4th wk; harvest Sept–Oct", tolerance: "Moderate", varieties: "Birsa Blackgram-1, T-9", yield: "0.43–0.80 t ha⁻¹" },
+    { name: "Greengram (Moong)", category: "Pulses", districts: "Pakur, Garhwa, Deoghar", season: "Kharif / Zaid", soil: "Well-drained loamy; pH 6.2–7.2", npk: "20:40:20 kg ha⁻¹", water: "Light irrigation", period: "65–75 days", sowing: "June 4th wk–July 2nd wk; harvest Sept", tolerance: "Moderate", varieties: "K-851, Pusa Vishal", yield: "0.31–0.70 t ha⁻¹" },
+    { name: "Horsegram (Kulthi)", category: "Pulses", districts: "Pakur and upland Jharkhand", season: "Late Kharif (Drought)", soil: "Poor upland sandy soil; pH 5.0–6.5", npk: "15:30:15 kg ha⁻¹", water: "Minimal", period: "90–120 days", sowing: "Aug 1st wk–Aug 3rd wk; harvest Nov–Dec", tolerance: "Very high", varieties: "Birsa Kulthi-1", yield: "0.50–0.80 t ha⁻¹" },
+    { name: "Mustard", category: "Oilseeds", districts: "Pakur, Garhwa, Palamu", season: "Rabi", soil: "Loam to sandy loam; pH 6.0–7.5", npk: "60:40:40 kg ha⁻¹", water: "Light irrigation", period: "100–120 days", sowing: "Oct 3rd wk–Nov 2nd wk; harvest Feb", tolerance: "Moderate", varieties: "Shivani", yield: "0.89–1.20 t ha⁻¹" },
+    { name: "Linseed", category: "Oilseeds", districts: "Pakur, Garhwa, Dumka", season: "Rabi", soil: "Fine clay loam; pH 6.0–7.5", npk: "40:20:20 kg ha⁻¹", water: "Rainfed / light irrigation", period: "120–140 days", sowing: "Oct 4th wk–Nov 3rd wk; harvest Mar", tolerance: "Moderate-high", varieties: "Sweta, T-397", yield: "0.55–0.90 t ha⁻¹" },
+    { name: "Sesame (Til)", category: "Oilseeds", districts: "Pakur, Godda, Sahibganj", season: "Late Kharif", soil: "Light sandy loam; pH 5.5–7.0", npk: "30:20:20 kg ha⁻¹", water: "Rainfed", period: "80–100 days", sowing: "Aug 1st wk–Aug 3rd wk; harvest Oct–Nov", tolerance: "High", varieties: "Kanke Safed, TC-25", yield: "0.40–0.60 t ha⁻¹" },
+    { name: "Groundnut", category: "Oilseeds", districts: "Garhwa, Pakur, Ranchi", season: "Kharif", soil: "Upland red sandy soil; pH 6.0–7.0", npk: "20:60:40 kg ha⁻¹", water: "500–700 mm", period: "100–120 days", sowing: "June 3rd wk–July 2nd wk; harvest Oct–Nov", tolerance: "Moderate", varieties: "AK12-24", yield: "1.20–1.80 t ha⁻¹" },
+    { name: "Tomato", category: "Vegetables", districts: "Pakur, Ranchi", season: "Rabi / Kharif", soil: "Well-drained loam; pH 6.0–7.0", npk: "100:60:60 kg ha⁻¹", water: "Regular irrigation", period: "90–150 days", sowing: "Nursery Aug–Oct; harvest Dec–Apr", tolerance: "Low", varieties: "Arka Abha, Swarna Sampada", yield: "15.0–24.3 t ha⁻¹" },
+    { name: "Brinjal", category: "Vegetables", districts: "Pakur, Ranchi", season: "Round the year / Rabi", soil: "Silt loam to clay; pH 5.5–6.8", npk: "100:50:50 kg ha⁻¹", water: "Regular irrigation", period: "Multi-pick", sowing: "Nursery June / Oct; multi-pick harvest", tolerance: "Moderate", varieties: "Swarna Pratibha, Swarna Ajay", yield: "11.0–20.0 t ha⁻¹" },
+    { name: "Cauliflower", category: "Vegetables", districts: "Pakur, Ranchi", season: "Rabi", soil: "Loam to clay loam; pH 6.0–7.0", npk: "120:80:60 kg ha⁻¹", water: "Regular irrigation", period: "90–120 days", sowing: "Sept–Oct; harvest Dec–Feb", tolerance: "Low", varieties: "Early Kunwari, Hajipur Extra Early", yield: "15.0–25.9 t ha⁻¹" },
+    { name: "French Bean", category: "Vegetables", districts: "Pakur, Hazaribagh", season: "Kharif / Rabi", soil: "Sandy loam; pH 5.5–6.5", npk: "50:80:50 kg ha⁻¹", water: "Regular irrigation", period: "60–75 days", sowing: "Aug / Oct; pickings in 60 days", tolerance: "Moderate", varieties: "Swarna Priya, Arka Komal", yield: "8.0–15.3 t ha⁻¹" },
+    { name: "Okra", category: "Vegetables", districts: "Pakur, Garhwa", season: "Kharif / Zaid", soil: "Sandy loam; pH 6.0–6.8", npk: "80:50:50 kg ha⁻¹", water: "Moderate irrigation", period: "90–120 days", sowing: "June–July / Mar; harvest Aug–Oct / May", tolerance: "Moderate; heat-wave sensitive", varieties: "Local recommended varieties", yield: "5.4–10.0 t ha⁻¹" },
+    { name: "Watermelon", category: "Fruits & Zaid", districts: "Riverbeds and plains across Garhwa, Pakur, Godda", season: "Zaid (Garma, March–June)", soil: "Well-drained sandy loam / riverbed soil; pH 6.0–7.0", npk: "80:50:50 kg ha⁻¹", water: "Supplemental irrigation", period: "90–110 days", sowing: "Feb–Mar; harvest May–June", tolerance: "High heat tolerance", varieties: "Locally adapted types", yield: "20.0–35.0 t ha⁻¹" },
+    { name: "Mango", category: "Fruits & Zaid", districts: "Ranchi, East Singhbhum, Pakur, Chota Nagpur plateau", season: "Perennial; harvest May–July", soil: "Deep, well-drained alluvial or red loam; pH 5.5–7.5", npk: "500:250:500 g plant⁻¹ year⁻¹", water: "Irrigation during establishment", period: "Orchard crop", sowing: "Perennial; harvest early summer", tolerance: "High drought tolerance once mature; frost-sensitive flowering", varieties: "Local orchard varieties", yield: "8.0–12.0 t ha⁻¹" },
+    { name: "Papaya", category: "Fruits & Zaid", districts: "Ranchi, East Singhbhum, Pakur, southern plateau", season: "Year-round fruiting", soil: "Rich sandy loam; pH 6.5–7.5; no waterlogging", npk: "250:250:500 g plant⁻¹ year⁻¹", water: "Supplemental summer irrigation", period: "Year-round fruiting", sowing: "Transplant in monsoon or spring", tolerance: "Moderate", varieties: "Locally adapted types", yield: "30.0–50.0 t ha⁻¹" }
+];
+
+function renderCropGuide() {
+    const grid = byId("cropGuideGrid");
+    if (!grid) return;
+    const query = (byId("cropSearch")?.value || "").trim().toLowerCase();
+    const activeFilter = document.querySelector(".guide-filter.active")?.dataset.category || "All";
+    const filtered = cropGuideData.filter(crop => {
+        const matchesCategory = activeFilter === "All" || crop.category === activeFilter;
+        const searchable = Object.values(crop).join(" ").toLowerCase();
+        return matchesCategory && searchable.includes(query);
+    });
+    grid.innerHTML = filtered.length ? filtered.map(crop => `
+        <article class="crop-guide-card">
+            <div class="crop-guide-top"><span class="crop-category">${crop.category}</span><span class="crop-season">${crop.season}</span></div>
+            <h3>${crop.name}</h3>
+            <p class="crop-districts">${crop.districts}</p>
+            <div class="crop-guide-details">
+                <div><small>Soil & pH</small><b>${crop.soil}</b></div>
+                <div><small>N:P:K</small><b>${crop.npk}</b></div>
+                <div><small>Water / period</small><b>${crop.water}; ${crop.period}</b></div>
+                <div><small>Sowing & harvest</small><b>${crop.sowing}</b></div>
+                <div><small>Tolerance</small><b>${crop.tolerance}</b></div>
+                <div><small>Varieties</small><b>${crop.varieties}</b></div>
+            </div>
+            <div class="crop-yield"><span>Expected yield</span><strong>${crop.yield}</strong></div>
+        </article>`).join("") : `<div class="card guide-empty">No crops match this search.</div>`;
+}
 
 let toastTimer;
 let currentLanguage = "en";
@@ -266,6 +375,9 @@ async function analyze() {
         moisture: Number(byId("moist") ? byId("moist").value : 58) || 0
     };
 
+    // Render the local agronomic result first so every input change is immediately visible.
+    fallbackLocalAnalysis(payload);
+
     try {
         const res = await fetch(`${API_BASE}/api/v1/predict/crop`, {
             method: "POST",
@@ -275,15 +387,15 @@ async function analyze() {
 
         if (!res.ok) throw new Error("Inference rejected.");
         const data = await res.json();
-        renderCropResults(data);
+        if (!data.diagnostics || !data.all_scores) throw new Error("Hosted model needs the agronomic scoring update.");
+        renderCropResults(data, payload);
         showToast(data.is_toxic ? "Alert: Soil Imbalance Detected" : "Analysis Complete");
     } catch (err) {
-        fallbackLocalAnalysis(payload);
         showToast("Computed via local agronomic engine.");
     }
 }
 
-function renderCropResults(data) {
+function renderCropResults(data, input) {
     const topCrop = data.top_crop || "Maize";
     const cropConfig = staticCrops[topCrop] || staticCrops["Maize"];
     const area = Number(byId("area") ? byId("area").value : 1) || 1;
@@ -296,6 +408,15 @@ function renderCropResults(data) {
     if (byId("heroConfidence")) byId("heroConfidence").textContent = `${data.confidence}%`;
     if (byId("heroYield")) byId("heroYield").textContent = `${estYield.toFixed(1)} q`;
     if (byId("heroProfit")) byId("heroProfit").textContent = `₹${(profit / 1000).toFixed(1)}K`;
+
+    const diagnosticData = data.diagnostics || (input && cropRequirements[topCrop]
+        ? buildInputDiagnostics(input, topCrop)
+        : "");
+    if (byId("inputDiagnostics")) {
+        byId("inputDiagnostics").innerHTML = Array.isArray(diagnosticData)
+            ? diagnosticData.map(item => `<span class="diagnostic ${item.level.toLowerCase().includes("critical") ? "critical" : item.level.toLowerCase() === "adequate" ? "good" : "low"}"><b>${item.label}: ${item.level}</b><small>${item.message}</small></span>`).join("")
+            : diagnosticData;
+    }
 
     const recContainer = byId("recommendations");
     if (recContainer) {
@@ -310,7 +431,7 @@ function renderCropResults(data) {
                     <span class="pill">${Number(item.score).toFixed(1)}% Match</span>
                 </div>
                 <div class="bar"><div class="fill" style="width:${item.score}%"></div></div>
-                <small>${index === 0 ? data.reason : text("alternative")}</small>
+                <small>${item.reason || (index === 0 ? data.reason : text("alternative"))}</small>
             </div>
         `).join("");
     }
@@ -337,25 +458,14 @@ function renderCropResults(data) {
 }
 
 function fallbackLocalAnalysis(p) {
-    const distance = (value, ideal, tolerance) => Math.max(0, 1 - Math.abs(value - ideal) / tolerance);
     const scoredCrops = Object.entries(staticCrops).map(([name, crop]) => {
-        const nutrientScore = (
-            distance(p.n, crop.n, 100) +
-            distance(p.p, crop.p, 70) +
-            distance(p.k, crop.k, 80)
-        ) / 3;
-        const soilScore = distance(p.ph, crop.ph, 2.5);
-        const moistureScore = distance(p.moisture, crop.moisture, 55);
-        const irrigationBoost = p.irrigation === "High" && crop.moisture > 60 ? 0.08 : 0;
-        const seasonScore = crop.seasons.includes(p.season) ? 1 : 0.55;
-        const score = Math.min(98, Math.max(35, (nutrientScore * 0.45 + soilScore * 0.2 + moistureScore * 0.2 + seasonScore * 0.15 + irrigationBoost) * 100));
-
-        return [name, { score, yield: crop.yield }];
+        return [name, scoreCrop(p, name, crop)];
     }).sort((a, b) => b[1].score - a[1].score);
 
     const [top, topResult] = scoredCrops[0];
     const conf = Number(topResult.score.toFixed(1));
-    const reason = `Best nutrient, pH, moisture and ${p.season.toLowerCase()} season fit from local crop options.`;
+    const reason = topResult.reason;
+    const diagnostics = buildInputDiagnostics(p, top);
 
     renderCropResults({
         top_crop: top,
@@ -363,8 +473,9 @@ function fallbackLocalAnalysis(p) {
         confidence: conf,
         yield_estimate: topResult.yield,
         reason: reason,
+        diagnostics: diagnostics,
         all_scores: Object.fromEntries(scoredCrops)
-    });
+    }, p);
 }
 
 function previewLand(event) {
@@ -385,42 +496,64 @@ async function photoAnalyze() {
     const fileInput = byId("landPhoto");
     if (!fileInput || !fileInput.files.length) return showToast("Select an image file first.");
 
-    const button = document.querySelector("#photo .analyze");
+    const button = byId("analyzeCamera");
     if (button) {
         button.disabled = true;
-        button.textContent = text("analyzingPhoto");
+        button.textContent = "Analysing soil image...";
     }
 
     const formData = new FormData();
     formData.append("file", fileInput.files[0]);
 
     try {
-        const res = await fetch(`${API_BASE}/api/v1/analyze/vision`, {
+        const res = await fetch(`${API_BASE}/api/v1/analyze/soil-image`, {
             method: "POST",
             body: formData
         });
 
-        if (!res.ok) throw new Error("Image analysis endpoint unavailable");
+        if (!res.ok) {
+            const error = await res.json().catch(() => ({}));
+            throw new Error(error.detail || "Image analysis endpoint unavailable");
+        }
         const data = await res.json();
 
         if (byId("photoResult")) byId("photoResult").style.display = "block";
 
         const checks = document.querySelectorAll(".check");
         if (checks.length >= 4) {
-            checks[0].innerHTML = `🌱 <b data-i18n="vegetation">Vegetation:</b> <br><span>${data.vegetation}</span>`;
-            checks[1].innerHTML = `🟫 <b data-i18n="soilLook">Soil appearance:</b> <br><span>${data.soil_appearance}</span>`;
-            checks[2].innerHTML = `☀️ <b>${text("lighting")}</b> <br><span>${data.lighting}</span>`;
-            checks[3].innerHTML = `🌾 <b>${text("conclusion")}</b> <br><span>${data.conclusion}</span>`;
+            checks[0].innerHTML = `🌱 <b>Land condition:</b> <br><span>${escapeHtml(data.land_condition || "Not clearly detectable")}</span>`;
+            checks[1].innerHTML = `🟫 <b>Soil appearance:</b> <br><span>${escapeHtml([data.soil_type, data.soil_color].filter(Boolean).join("; ") || "Not clearly detectable")}</span>`;
+            checks[2].innerHTML = `🧪 <b>Numeric soil values:</b> <br><span>Not reliably detectable from image — enter soil-test value manually.</span>`;
+            checks[3].innerHTML = `🌾 <b>Observations:</b> <br><span>${escapeHtml((data.observations || []).join(" ") || "No additional visual observations")}</span>`;
         }
+        const limitations = data.limitations || ["RGB imagery cannot replace laboratory soil testing."];
+        if (byId("photoLimitations")) byId("photoLimitations").innerHTML = `<strong>Limitations:</strong> ${escapeHtml(limitations.join(" "))}`;
+        if (data.soil_type) setSoilFromImage(data.soil_type);
+        analyze();
         showToast("Image processed successfully.");
     } catch (err) {
-        showToast("Processing complete. Validating local heuristics.");
+        showToast(err.message || "Image analysis failed.");
         if (byId("photoResult")) byId("photoResult").style.display = "block";
     } finally {
         if (button) {
             button.disabled = false;
             button.textContent = text("photoDone");
         }
+    }
+}
+
+function escapeHtml(value) {
+    return String(value).replace(/[&<>'"]/g, character => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", "'": "&#39;", '"': "&quot;" }[character]));
+}
+
+function setSoilFromImage(soilType) {
+    const normalized = soilType.toLowerCase();
+    const soil = byId("soil");
+    if (!soil) return;
+    const matchingOption = [...soil.options].find(option => normalized.includes(option.value.replace(" Soil", "").toLowerCase()));
+    if (matchingOption) {
+        soil.value = matchingOption.value;
+        soil.classList.add("image-updated");
     }
 }
 
@@ -535,7 +668,15 @@ window.addEventListener("DOMContentLoaded", () => {
         if (event.key === "Enter") sendChatMessage();
     });
 
+    byId("cropSearch")?.addEventListener("input", renderCropGuide);
+    document.querySelectorAll(".guide-filter").forEach(button => button.addEventListener("click", () => {
+        document.querySelectorAll(".guide-filter").forEach(item => item.classList.remove("active"));
+        button.classList.add("active");
+        renderCropGuide();
+    }));
+
     renderDistricts();
+    renderCropGuide();
     updateDistrict("Ranchi");
     analyze();
     calculateEarnings();

@@ -21,6 +21,7 @@
 <a href="#photo" data-i18n="navPhoto">Land Photo</a>
 <a href="#market" data-i18n="navMarket">Market</a>
 <a href="#calculator" data-i18n="navCalc">Calculator</a>
+<a href="#crop-guide">Crop Guide</a>
 <a href="#districts" data-i18n="navDistricts">Districts</a>
 </nav>
 
@@ -227,6 +228,7 @@ WEATHER INTELLIGENCE
 
 <div class="result">
 <div class="eyebrow" data-i18n="output">SYSTEM OUTPUT</div>
+<div id="inputDiagnostics" class="input-diagnostics"></div>
 <div id="recommendations"></div>
 </div>
 </div>
@@ -248,13 +250,13 @@ WEATHER INTELLIGENCE
 <div style="font-size:42px">🌾📷</div>
 <h3 data-i18n="uploadTitle">Upload your land / field photo</h3>
 <p data-i18n="uploadSub">Take a clear photo showing soil, crop condition and field area.</p>
-<input id="landPhoto" type="file" accept="image/*" onchange="previewLand(event)">
+<input id="landPhoto" type="file" accept="image/jpeg,image/png,image/webp" capture="environment" onchange="previewLand(event)">
 </div>
 
 <div id="preview" class="preview">
 <img id="photoImg" alt="Land preview">
-<button class="analyze" onclick="photoAnalyze()" data-i18n="photoAnalyze">
-Analyze Photo
+<button id="analyzeCamera" class="analyze" onclick="photoAnalyze()" data-i18n="photoAnalyze">
+Analyse Camera / Photo
 </button>
 </div>
 
@@ -278,6 +280,7 @@ Analyze Photo
 🌾 <b data-i18n="cropMatch">Crop match:</b> <span data-i18n="combine">Combine inputs</span>
 </div>
 </div>
+<div id="photoLimitations" class="photo-limitations"></div>
 </div>
 </div>
 </section>
@@ -398,6 +401,29 @@ Calculate My Earnings
 </div>
 </div>
 </div>
+</section>
+
+<!-- CROP GUIDE -->
+<section id="crop-guide" class="section">
+<div class="section-head">
+<div>
+<h2>🌾 Jharkhand Crop Guide</h2>
+<p>Season-wise production reference for 20 major crops, with local soils, nutrients, varieties and expected yields.</p>
+</div>
+</div>
+
+<div class="crop-guide-tools">
+<input id="cropSearch" type="search" placeholder="Search crop, district, soil or variety" aria-label="Search crop guide">
+<div class="guide-filters" role="group" aria-label="Filter crop guide">
+<button class="guide-filter active" type="button" data-category="All">All crops</button>
+<button class="guide-filter" type="button" data-category="Field Crops">Field crops</button>
+<button class="guide-filter" type="button" data-category="Pulses">Pulses</button>
+<button class="guide-filter" type="button" data-category="Oilseeds">Oilseeds</button>
+<button class="guide-filter" type="button" data-category="Vegetables">Vegetables</button>
+<button class="guide-filter" type="button" data-category="Fruits & Zaid">Fruits & Zaid</button>
+</div>
+</div>
+<div id="cropGuideGrid" class="crop-guide-grid"></div>
 </section>
 
 <!-- DISTRICTS -->
