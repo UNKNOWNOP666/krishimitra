@@ -4,7 +4,7 @@ services:
     runtime: python
     plan: free
     buildCommand: pip install -r requirements.txt
-    startCommand: python main.c
+    startCommand: python main.py
     envVars:
       - key: GEMINI_API_KEY
         sync: false
