@@ -1,0 +1,10 @@
+services:
+  - type: web
+    name: krishimitra-api
+    runtime: python
+    plan: free
+    buildCommand: pip install -r requirements.txt
+    startCommand: python main.c
+    envVars:
+      - key: GEMINI_API_KEY
+        sync: false
