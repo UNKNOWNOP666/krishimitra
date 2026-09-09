@@ -27,7 +27,7 @@ const translations = {
         featureTitle: "🌾 Farmer-first features", featureSub: "A strong foundation for modern agriculture.",
         f1: "Soil Health", f1p: "NPK, pH and moisture inputs create a soil suitability profile.", f2: "Weather Intelligence", f2p: "Live weather signals to improve rainfall and temperature planning.", f3: "Land & Disease Vision", f3p: "Visual signals combined with agronomic and weather data.", f4: "Hindi Voice", f4p: "Voice-first assistance makes the platform accessible to everyone.",
         footer1: "Advanced crop decision support system", footer2: "Data is updated regularly based on local APMC trends and weather signals.",
-        state: "Jharkhand", liveData: "Live Data", next24: "Next 24 hours", relative: "Relative humidity", surface: "Surface", apmcLive: "APMC Live", commodity: "Commodity", freight: "Freight", distance: "Distance", verified: "Verified", enamHub: "e-NAM Hub", evaluating: "Evaluating agronomic suitability...", alternative: "Strong alternative based on the current farm profile.", lighting: "Lighting:", conclusion: "Conclusion:", analyzingPhoto: "⏳ Analyzing image...", photoDone: "Analyze Photo", thinking: "Thinking...", dry: "Dry", wet: "Wet", kharif: "Kharif", rabi: "Rabi", zaid: "Zaid", lowRainfed: "Low / Rainfed", mediumOption: "Medium", high: "High", redSoil: "Red Soil", lateriteSoil: "Laterite Soil", sandySoil: "Sandy Soil", blackSoil: "Black Soil", micaceousSoil: "Micaceous Soil", maize: "🌽 Maize", paddy: "🌾 Paddy", arhar: "🌱 Arhar", wheat: "🌾 Wheat", soybean: "🫘 Soybean", groundnut: "🥜 Groundnut", chickpea: "🫘 Chickpea", mustard: "🌼 Mustard"
+        state: "Jharkhand", liveData: "Live Data", next24: "Next 24 hours", relative: "Relative humidity", surface: "Surface", apmcLive: "APMC Live", commodity: "Commodity", freight: "Freight", distance: "Distance", verified: "Verified", enamHub: "e-NAM Hub", evaluating: "Evaluating agronomic suitability...", alternative: "Strong alternative based on the current farm profile.", lighting: "Lighting:", conclusion: "Conclusion:", analyzingPhoto: "⏳ Analyzing image...", photoDone: "Analyze Photo", thinking: "Thinking...", dry: "Dry", wet: "Wet", kharif: "Kharif", rabi: "Rabi", zaid: "Zaid", lowRainfed: "Low / Rainfed", mediumOption: "Medium", high: "High", redSoil: "Red Soil", lateriteSoil: "Laterite Soil", sandySoil: "Sandy Soil", blackSoil: "Black Soil", micaceousSoil: "Micaceous Soil", maize: "🌽 Maize", paddy: "🌾 Paddy", arhar: "🌱 Arhar", wheat: "🌾 Wheat", soybean: "🫘 Soybean", groundnut: "🥜 Groundnut", chickpea: "🫘 Chickpea", mustard: "🌼 Mustard", nitrogen: "Nitrogen (N)", phosphorus: "Phosphorus (P)", potassium: "Potassium (K)", soilPh: "Soil pH", stateMap: "JHARKHAND", chatTitle: "Digital Farm Assistant", chatSub: "Live Expert Guidance", chatGreeting: "Hello! Ask me about nutrients, crop choice, moisture, or market prices.", chatPlaceholder: "Ask a farm question..."
     },
     hi: {
         brand: "कृषिमित्र", navAI: "फसल विश्लेषक", navPhoto: "खेत की फोटो", navMarket: "मंडी", navCalc: "कैलकुलेटर", navDistricts: "जिले",
@@ -53,7 +53,7 @@ const translations = {
         featureTitle: "🌾 किसान-प्रथम विशेषताएं", featureSub: "आधुनिक कृषि के लिए एक मजबूत नींव।",
         f1: "मिट्टी का स्वास्थ्य", f1p: "NPK, pH और नमी इनपुट एक मिट्टी उपयुक्तता प्रोफ़ाइल बनाते हैं।", f2: "मौसम की जानकारी", f2p: "बारिश और तापमान नियोजन में सुधार के लिए लाइव मौसम संकेत।", f3: "भूमि और रोग दृष्टि", f3p: "कृषि और मौसम डेटा के साथ संयुक्त दृश्य संकेत।", f4: "हिंदी वॉयस", f4p: "मंच को सभी के लिए सुलभ बनाती है।",
         footer1: "उन्नत फसल निर्णय समर्थन प्रणाली", footer2: "डेटा स्थानीय APMC प्रवृत्तियों और मौसम संकेतों के आधार पर नियमित रूप से अपडेट किया जाता है।",
-        state: "झारखंड", liveData: "लाइव डेटा", next24: "अगले 24 घंटे", relative: "सापेक्ष नमी", surface: "सतह", apmcLive: "APMC लाइव", commodity: "वस्तु", freight: "ढुलाई", distance: "दूरी", verified: "सत्यापित", enamHub: "ई-नाम हब", evaluating: "कृषि उपयुक्तता का आकलन हो रहा है...", alternative: "वर्तमान खेत की स्थिति के आधार पर अच्छा विकल्प।", lighting: "रोशनी:", conclusion: "निष्कर्ष:", analyzingPhoto: "⏳ फोटो का विश्लेषण हो रहा है...", photoDone: "फोटो का विश्लेषण करें", thinking: "सोचा जा रहा है...", dry: "सूखा", wet: "गीला", kharif: "खरीफ", rabi: "रबी", zaid: "जायद", lowRainfed: "कम / वर्षा आधारित", mediumOption: "मध्यम", high: "अधिक", redSoil: "लाल मिट्टी", lateriteSoil: "लेटराइट मिट्टी", sandySoil: "बलुई मिट्टी", blackSoil: "काली मिट्टी", micaceousSoil: "अभ्रकी मिट्टी", maize: "🌽 मक्का", paddy: "🌾 धान", arhar: "🌱 अरहर", wheat: "🌾 गेहूं", soybean: "🫘 सोयाबीन", groundnut: "🥜 मूंगफली", chickpea: "🫘 चना", mustard: "🌼 सरसों"
+        state: "झारखंड", liveData: "लाइव डेटा", next24: "अगले 24 घंटे", relative: "सापेक्ष नमी", surface: "सतह", apmcLive: "APMC लाइव", commodity: "वस्तु", freight: "ढुलाई", distance: "दूरी", verified: "सत्यापित", enamHub: "ई-नाम हब", evaluating: "कृषि उपयुक्तता का आकलन हो रहा है...", alternative: "वर्तमान खेत की स्थिति के आधार पर अच्छा विकल्प।", lighting: "रोशनी:", conclusion: "निष्कर्ष:", analyzingPhoto: "⏳ फोटो का विश्लेषण हो रहा है...", photoDone: "फोटो का विश्लेषण करें", thinking: "सोचा जा रहा है...", dry: "सूखा", wet: "गीला", kharif: "खरीफ", rabi: "रबी", zaid: "जायद", lowRainfed: "कम / वर्षा आधारित", mediumOption: "मध्यम", high: "अधिक", redSoil: "लाल मिट्टी", lateriteSoil: "लेटराइट मिट्टी", sandySoil: "बलुई मिट्टी", blackSoil: "काली मिट्टी", micaceousSoil: "अभ्रकी मिट्टी", maize: "🌽 मक्का", paddy: "🌾 धान", arhar: "🌱 अरहर", wheat: "🌾 गेहूं", soybean: "🫘 सोयाबीन", groundnut: "🥜 मूंगफली", chickpea: "🫘 चना", mustard: "🌼 सरसों", nitrogen: "नाइट्रोजन (N)", phosphorus: "फास्फोरस (P)", potassium: "पोटैशियम (K)", soilPh: "मिट्टी का pH", stateMap: "झारखंड", chatTitle: "डिजिटल कृषि सहायक", chatSub: "लाइव विशेषज्ञ मार्गदर्शन", chatGreeting: "नमस्ते! पोषक तत्वों, फसल चयन, नमी या बाजार भाव के बारे में पूछें।", chatPlaceholder: "खेती से जुड़ा सवाल पूछें..."
     }
 };
 
@@ -63,6 +63,20 @@ const districts = [
     "Khunti", "Koderma", "Latehar", "Lohardaga", "Pakur", "Palamu",
     "Ramgarh", "Ranchi", "Sahebganj", "Seraikela-Kharsawan", "Simdega", "West Singhbhum"
 ];
+
+const districtNamesHi = {
+    Bokaro: "बोकारो", Chatra: "चतरा", Deoghar: "देवघर", Dhanbad: "धनबाद", Dumka: "दुमका",
+    "East Singhbhum": "पूर्वी सिंहभूम", Garhwa: "गढ़वा", Giridih: "गिरिडीह", Godda: "गोड्डा", Gumla: "गुमला",
+    Hazaribagh: "हजारीबाग", Jamtara: "जामताड़ा", Khunti: "खूंटी", Koderma: "कोडरमा", Latehar: "लातेहार",
+    Lohardaga: "लोहरदगा", Pakur: "पाकुड़", Palamu: "पलामू", Ramgarh: "रामगढ़", Ranchi: "रांची",
+    Sahebganj: "साहिबगंज", "Seraikela-Kharsawan": "सरायकेला-खरसावां", Simdega: "सिमडेगा", "West Singhbhum": "पश्चिमी सिंहभूम"
+};
+
+const displayDistrict = name => currentLanguage === "hi" ? (districtNamesHi[name] || name) : name;
+const displayCrop = name => currentLanguage === "hi" ? text(name.toLowerCase()) : name;
+const displayCommodity = name => currentLanguage === "hi"
+    ? ({ Maize: "मक्का", Paddy: "धान", Wheat: "गेहूं", Mustard: "सरसों" }[name] || name)
+    : name;
 
 // Realistic static fallback data updated for presentation
 const staticCrops = {
@@ -98,6 +112,10 @@ function applyTranslations(lang) {
             el.textContent = translations[lang][key];
         }
     });
+    document.querySelectorAll("[data-i18n-placeholder]").forEach(el => {
+        const key = el.getAttribute("data-i18n-placeholder");
+        if (translations[lang] && translations[lang][key]) el.placeholder = translations[lang][key];
+    });
     translateFormOptions();
     renderDistricts();
     updateDistrict(byId("district")?.value || "Ranchi");
@@ -130,14 +148,14 @@ function renderDistricts() {
 
     if (districtSelect) {
         const selectedDistrict = districtSelect.value || "Ranchi";
-        districtSelect.innerHTML = districts.map(name => `<option value="${name}">${name}</option>`).join("");
+        districtSelect.innerHTML = districts.map(name => `<option value="${name}">${displayDistrict(name)}</option>`).join("");
         districtSelect.value = districts.includes(selectedDistrict) ? selectedDistrict : "Ranchi";
     }
 
     if (districtGrid) {
         districtGrid.innerHTML = districts.map(name => 
             `<button class="district-btn" type="button" data-district="${name}">
-                <strong>${name}</strong><span>${text("state")}</span>
+                <strong>${displayDistrict(name)}</strong><span>${text("state")}</span>
             </button>`
         ).join("");
 
@@ -155,11 +173,11 @@ function updateDistrict(name) {
     const season = seasonEl ? seasonEl.value : "Kharif";
 
     const seasonKey = { Kharif: "kharif", Rabi: "rabi", Zaid: "zaid" }[season];
-    if (byId("heroDistrict")) byId("heroDistrict").textContent = `${name} • ${seasonKey ? text(seasonKey) : season}`;
-    if (byId("weatherLocation")) byId("weatherLocation").textContent = `${name}, ${text("state")}`;
-    if (byId("districtTitle2")) byId("districtTitle2").textContent = name;
+    if (byId("heroDistrict")) byId("heroDistrict").textContent = `${displayDistrict(name)} • ${seasonKey ? text(seasonKey) : season}`;
+    if (byId("weatherLocation")) byId("weatherLocation").textContent = `${displayDistrict(name)}, ${text("state")}`;
+    if (byId("districtTitle2")) byId("districtTitle2").textContent = displayDistrict(name);
     if (byId("districtAdvice")) byId("districtAdvice").textContent = currentLanguage === "hi"
-        ? `${name} कृषि-जलवायु क्षेत्र के मापदंड लोड किए गए।`
+        ? `${displayDistrict(name)} कृषि-जलवायु क्षेत्र के मापदंड लोड किए गए।`
         : `${name} agro-climatic zone parameters loaded.`;
 
     document.querySelectorAll(".district-btn").forEach(button => {
@@ -199,12 +217,12 @@ async function fetchMarket(district) {
             marketCardContainer.innerHTML = `
                 <div class="market-card best">
                     <div class="market-top">
-                        <span class="market-name">${data.name}</span>
+                        <span class="market-name">${displayDistrict(district)} ${currentLanguage === "hi" ? "APMC मंडी" : "APMC Mandi"}</span>
                         <span class="best-label">${text("apmcLive")}</span>
                     </div>
                     <div class="price">₹${data.price.toLocaleString()} <small>/ quintal</small></div>
                     <div class="market-meta">
-                        <div class="meta">${text("commodity")}<b>${data.commodity}</b></div>
+                        <div class="meta">${text("commodity")}<b>${displayCommodity(data.commodity)}</b></div>
                         <div class="meta">${text("freight")}<b>₹${data.freight} (${data.distance} km)</b></div>
                     </div>
                 </div>`;
@@ -219,7 +237,7 @@ function renderFallbackMarket(district) {
     if (!container) return;
     container.innerHTML = `
         <div class="market-card best">
-            <div class="market-top"><span class="market-name">${district} Mandi</span><span class="best-label">${text("apmcLive")}</span></div>
+            <div class="market-top"><span class="market-name">${displayDistrict(district)} ${currentLanguage === "hi" ? "मंडी" : "Mandi"}</span><span class="best-label">${text("apmcLive")}</span></div>
             <div class="price">₹2,250 <small>/ quintal</small></div>
             <div class="market-meta"><div class="meta">${text("freight")}<b>₹800</b></div><div class="meta">${text("distance")}<b>18 km</b></div></div>
         </div>
@@ -274,7 +292,7 @@ function renderCropResults(data) {
     const totalCost = cropConfig.cost * area;
     const profit = Math.max(0, revenue - totalCost);
 
-    if (byId("heroTopCrop")) byId("heroTopCrop").textContent = `${topCrop} (${data.confidence}% match)`;
+    if (byId("heroTopCrop")) byId("heroTopCrop").textContent = `${displayCrop(topCrop)} (${data.confidence}% match)`;
     if (byId("heroConfidence")) byId("heroConfidence").textContent = `${data.confidence}%`;
     if (byId("heroYield")) byId("heroYield").textContent = `${estYield.toFixed(1)} q`;
     if (byId("heroProfit")) byId("heroProfit").textContent = `₹${(profit / 1000).toFixed(1)}K`;
@@ -288,7 +306,7 @@ function renderCropResults(data) {
         recContainer.innerHTML = rankedCrops.map(([name, item], index) => `
             <div class="recommend">
                 <div class="r-top">
-                    <span class="crop">${index + 1}. ${name}</span>
+                    <span class="crop">${index + 1}. ${displayCrop(name)}</span>
                     <span class="pill">${Number(item.score).toFixed(1)}% Match</span>
                 </div>
                 <div class="bar"><div class="fill" style="width:${item.score}%"></div></div>
@@ -307,7 +325,7 @@ function renderCropResults(data) {
             const net = rev - (cfg.cost * area);
 
             return `<tr>
-                <td><strong>${name}</strong></td>
+                <td><strong>${displayCrop(name)}</strong></td>
                 <td>${Math.max(0, item.score).toFixed(0)}%</td>
                 <td>${q.toFixed(1)} q</td>
                 <td>₹${(cfg.cost * area).toLocaleString()}</td>

@@ -156,22 +156,22 @@ Enter farm conditions to generate a personalized crop ranking.
 </div>
 
 <div class="field">
-<label>Nitrogen (N)</label>
+<label data-i18n="nitrogen">Nitrogen (N)</label>
 <input id="n" type="number" value="72" min="0" max="150">
 </div>
 
 <div class="field">
-<label>Phosphorus (P)</label>
+<label data-i18n="phosphorus">Phosphorus (P)</label>
 <input id="p" type="number" value="45" min="0" max="150">
 </div>
 
 <div class="field">
-<label>Potassium (K)</label>
+<label data-i18n="potassium">Potassium (K)</label>
 <input id="k" type="number" value="60" min="0" max="150">
 </div>
 
 <div class="field">
-<label>Soil pH</label>
+<label data-i18n="soilPh">Soil pH</label>
 <input id="ph" type="number" value="6.5" min="3" max="10" step=".1">
 </div>
 
@@ -415,7 +415,7 @@ Calculate My Earnings
 </div>
 <div class="card">
 <div class="map">
-<b>JHARKHAND</b>
+<b data-i18n="stateMap">JHARKHAND</b>
 <div class="dot" style="left:46%;top:43%"></div>
 <div class="dot" style="left:62%;top:31%"></div>
 <div class="dot" style="left:32%;top:56%"></div>
@@ -509,14 +509,14 @@ Data is updated regularly based on local APMC trends and weather signals.
 
 <aside id="chatbox" class="chatbox" aria-label="Farming assistant">
 <div class="chat-head">
-<div><strong>Digital Farm Assistant</strong><small>Live Expert Guidance</small></div>
+<div><strong data-i18n="chatTitle">Digital Farm Assistant</strong><small data-i18n="chatSub">Live Expert Guidance</small></div>
 <button type="button" class="chat-close" onclick="toggleChat()" aria-label="Close chat">×</button>
 </div>
 <div id="chatMessages" class="chat-messages">
-<div class="chat-message bot">Hello! Ask me about nutrients, crop choice, moisture, or market prices.</div>
+<div class="chat-message bot" data-i18n="chatGreeting">Hello! Ask me about nutrients, crop choice, moisture, or market prices.</div>
 </div>
 <div class="chat-compose">
-<input id="chatInput" type="text" placeholder="Ask a farm question..." aria-label="Ask the farm assistant">
+<input id="chatInput" type="text" placeholder="Ask a farm question..." aria-label="Ask the farm assistant" data-i18n-placeholder="chatPlaceholder">
 <button type="button" onclick="sendChatMessage()" aria-label="Send message">➤</button>
 </div>
 </aside>
