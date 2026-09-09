@@ -109,6 +109,19 @@ async def call_gemini(prompt: str):
     return await asyncio.to_thread(send_request)
 
 
+def local_chat_answer(question: str):
+    question_lower = question.lower()
+    if "moisture" in question_lower or "water" in question_lower:
+        return "Check soil moisture by squeezing a handful of soil gently. Water when it forms a weak ball that breaks apart easily, and avoid leaving the field waterlogged."
+    if "fertilizer" in question_lower or "nutrient" in question_lower or "npk" in question_lower:
+        return "Use a soil test before choosing fertilizer so nitrogen, phosphorus, and potassium match the crop need. Apply nutrients in measured doses and follow the product label or local agriculture officer's advice."
+    if "crop" in question_lower or "plant" in question_lower:
+        return "Choose a crop that matches your season, soil type, water supply, and local market. A soil test and advice from your nearest agriculture office can improve the final decision."
+    if "price" in question_lower or "market" in question_lower or "sell" in question_lower:
+        return "Compare the local mandi price with transport, handling, and commission costs before selling. Farmer producer organizations can sometimes improve bargaining power by combining produce."
+    return "Use the crop analyzer with your soil, season, irrigation, and moisture details for a practical recommendation. For important decisions, confirm the result with a soil test or your local agriculture officer."
+
+
 @app.post("/api/v1/chat")
 async def chat(data: ChatRequest):
     """Sends farmer questions to Gemini without exposing the API key to the browser."""
@@ -127,9 +140,9 @@ Question: {question}"""
         if len(answer) < 40 or answer[-1] not in ".!?।":
             answer = "Check soil moisture by taking a handful of soil and squeezing it gently. If it forms a loose ball without dripping water, the moisture is usually suitable for the crop."
         return {"answer": answer}
-    except (HTTPError, URLError, KeyError, IndexError, RuntimeError) as error:
+    except (HTTPError, URLError, KeyError, IndexError, RuntimeError, TimeoutError) as error:
         print(f"Gemini chat unavailable: {error}")
-        return {"answer": "The farming assistant is temporarily unavailable. Please try again shortly."}
+        return {"answer": local_chat_answer(question)}
 
 @app.post("/api/v1/analyze/vision")
 async def analyze_vision(file: UploadFile = File(...)):
