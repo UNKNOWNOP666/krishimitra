@@ -1,0 +1,526 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>KrishiMitra — Jharkhand</title>
+<link rel="stylesheet" href="sda.css">
+</head>
+
+<body>
+
+<header>
+<div class="nav">
+<div class="logo">
+<div class="logo-b">🌱</div>
+<span data-i18n="brand">KrishiMitra</span>
+</div>
+
+<nav>
+<a href="#analyzer" data-i18n="navAI">Crop Analyzer</a>
+<a href="#photo" data-i18n="navPhoto">Land Photo</a>
+<a href="#market" data-i18n="navMarket">Market</a>
+<a href="#calculator" data-i18n="navCalc">Calculator</a>
+<a href="#districts" data-i18n="navDistricts">Districts</a>
+</nav>
+
+<select class="lang" id="lang">
+<option value="en">English</option>
+<option value="hi">हिंदी</option>
+</select>
+</div>
+</header>
+
+
+<!-- HERO -->
+<section class="hero">
+<div class="hero-in">
+
+<div>
+<div class="eyebrow" data-i18n="eyebrow">
+Government of Jharkhand • Department of Agriculture
+</div>
+
+<h1 data-i18n="heroTitle">
+Smart farming decisions for a better harvest.
+</h1>
+
+<p data-i18n="heroText">
+A farmer-first platform that combines soil, weather, location,
+season and land information to recommend suitable crops and
+estimate profitability.
+</p>
+
+<div class="buttons">
+<a class="btn primary" href="#analyzer" data-i18n="start">
+Start Crop Analysis →
+</a>
+<button class="secondary" onclick="voiceDemo()">
+🎤 <span data-i18n="voice">Voice Readout</span>
+</button>
+</div>
+</div>
+
+
+<div class="hero-card">
+
+<div class="eyebrow" data-i18n="insight">
+FARM INSIGHT
+</div>
+
+<h3 id="heroDistrict">
+Ranchi • Kharif
+</h3>
+
+<div class="score">
+<div>
+<small data-i18n="top">
+Top recommendation
+</small>
+<strong id="heroTopCrop">🌽 Maize</strong>
+</div>
+<span class="pill" id="heroConfidence">92%</span>
+</div>
+
+<div class="stats">
+<div class="stat">
+<small data-i18n="yield">Expected yield</small>
+<b id="heroYield">22 q/ac</b>
+</div>
+<div class="stat">
+<small data-i18n="profit">Est. profit</small>
+<b id="heroProfit">₹28.2K</b>
+</div>
+<div class="stat">
+<small data-i18n="water">Water need</small>
+<b data-i18n="medium">Medium</b>
+</div>
+</div>
+
+</div>
+</div>
+</section>
+
+
+<main>
+
+<!-- ANALYZER -->
+<section id="analyzer" class="section">
+<div class="section-head">
+<div>
+<h2 data-i18n="analyzerTitle">
+📊 Smart Crop Analyzer
+</h2>
+<p data-i18n="analyzerSub">
+Enter farm conditions to generate a personalized crop ranking.
+</p>
+</div>
+</div>
+
+<div class="grid">
+<div class="card">
+<div class="form-grid">
+
+<div class="field">
+<label data-i18n="district">District</label>
+<select id="district"></select>
+</div>
+
+<div class="field">
+<label data-i18n="season">Season</label>
+<select id="season">
+<option value="Kharif">Kharif</option>
+<option value="Rabi">Rabi</option>
+<option value="Zaid">Zaid</option>
+</select>
+</div>
+
+<div class="field">
+<label data-i18n="soil">Soil type</label>
+<select id="soil">
+<option>Red Soil</option>
+<option>Laterite Soil</option>
+<option>Sandy Soil</option>
+<option>Black Soil</option>
+<option>Micaceous Soil</option>
+</select>
+</div>
+
+<div class="field">
+<label data-i18n="irrigation">Irrigation</label>
+<select id="water">
+<option value="Low">Low / Rainfed</option>
+<option value="Medium">Medium</option>
+<option value="High">High</option>
+</select>
+</div>
+
+<div class="field">
+<label>Nitrogen (N)</label>
+<input id="n" type="number" value="72" min="0" max="150">
+</div>
+
+<div class="field">
+<label>Phosphorus (P)</label>
+<input id="p" type="number" value="45" min="0" max="150">
+</div>
+
+<div class="field">
+<label>Potassium (K)</label>
+<input id="k" type="number" value="60" min="0" max="150">
+</div>
+
+<div class="field">
+<label>Soil pH</label>
+<input id="ph" type="number" value="6.5" min="3" max="10" step=".1">
+</div>
+
+<div class="field full">
+<label data-i18n="moisture">Soil moisture</label>
+<div class="range-line">
+<span>Dry</span><b id="moistVal">58%</b><span>Wet</span>
+</div>
+<input id="moist" type="range" min="0" max="100" value="58" oninput="moistVal.textContent=this.value+'%'">
+</div>
+
+<div class="field full">
+<label data-i18n="landArea">Land area (acre)</label>
+<input id="area" type="number" value="1" min=".1" step=".1">
+</div>
+
+</div>
+
+<button class="analyze" onclick="analyze()" data-i18n="analyze">
+✨ Analyze My Farm
+</button>
+</div>
+
+<!-- WEATHER -->
+<div class="card">
+<div class="eyebrow" data-i18n="weatherInt">
+WEATHER INTELLIGENCE
+</div>
+<h3 id="weatherLocation">Ranchi, Jharkhand</h3>
+
+<div class="weather">
+<div class="weather-box">
+🌡️ <span data-i18n="temperature">Temperature</span>
+<b>28°C</b>
+<small>Live Data</small>
+</div>
+<div class="weather-box">
+🌧️ <span data-i18n="rain">Rain chance</span>
+<b>72%</b>
+<small>Next 24 hours</small>
+</div>
+<div class="weather-box">
+💧 <span data-i18n="humidity">Humidity</span>
+<b>76%</b>
+<small>Relative humidity</small>
+</div>
+<div class="weather-box">
+💨 <span data-i18n="wind">Wind</span>
+<b>12 km/h</b>
+<small>Moderate</small>
+</div>
+</div>
+
+<div class="result">
+<div class="eyebrow" data-i18n="output">SYSTEM OUTPUT</div>
+<div id="recommendations"></div>
+</div>
+</div>
+
+</div>
+</section>
+
+<!-- LAND PHOTO -->
+<section id="photo" class="section">
+<div class="section-head">
+<div>
+<h2 data-i18n="photoTitle">📷 Analyze Your Land Photo</h2>
+<p data-i18n="photoSub">Upload a clear photo of your field for a visual pre-check.</p>
+</div>
+</div>
+
+<div class="card">
+<div class="upload">
+<div style="font-size:42px">🌾📷</div>
+<h3 data-i18n="uploadTitle">Upload your land / field photo</h3>
+<p data-i18n="uploadSub">Take a clear photo showing soil, crop condition and field area.</p>
+<input id="landPhoto" type="file" accept="image/*" onchange="previewLand(event)">
+</div>
+
+<div id="preview" class="preview">
+<img id="photoImg" alt="Land preview">
+<button class="analyze" onclick="photoAnalyze()" data-i18n="photoAnalyze">
+Analyze Photo
+</button>
+</div>
+
+<div class="notice" data-i18n="photoNotice">
+<b>Notice:</b> Visual analysis serves as a preliminary check. Always combine with physical soil tests for accurate NPK and moisture validation.
+</div>
+
+<div id="photoResult" class="photo-result">
+<h3 data-i18n="visualResult">Visual pre-check</h3>
+<div class="checklist">
+<div class="check">
+🌱 <b data-i18n="vegetation">Vegetation:</b> <span data-i18n="detected">Detected</span>
+</div>
+<div class="check">
+🟫 <b data-i18n="soilLook">Soil appearance:</b> <span data-i18n="visualOnly">Visual estimate</span>
+</div>
+<div class="check">
+💧 <b data-i18n="moistLook">Moisture:</b> <span data-i18n="cameraLimit">Camera cannot confirm</span>
+</div>
+<div class="check">
+🌾 <b data-i18n="cropMatch">Crop match:</b> <span data-i18n="combine">Combine inputs</span>
+</div>
+</div>
+</div>
+</div>
+</section>
+
+<!-- MARKET -->
+<section id="market" class="section">
+<div class="section-head">
+<div>
+<h2 data-i18n="marketTitle">🏪 Market Prices & Best Selling Options</h2>
+<p data-i18n="marketSub">Compare indicative prices, travel cost and net return before choosing where to sell.</p>
+</div>
+</div>
+
+<div class="market-grid">
+<div class="card">
+<div id="marketCards" class="market-cards"></div>
+<div class="market-note" data-i18n="marketNote">
+Live market prices fetched from regional APMC and e-NAM hubs.
+</div>
+</div>
+
+<div class="card">
+<div class="eyebrow" data-i18n="sellTitle">WAYS TO SELL</div>
+<div class="sell-options" style="grid-template-columns:1fr">
+<div class="sell">
+<strong>🏪 <span data-i18n="sell1">Local Mandi</span></strong>
+<span data-i18n="sell1p">Compare nearby mandi prices and transport before selling.</span>
+</div>
+<div class="sell">
+<strong>🌐 <span data-i18n="sell2">e-NAM / Online</span></strong>
+<span data-i18n="sell2p">Explore digital market access where available.</span>
+</div>
+<div class="sell">
+<strong>🤝 <span data-i18n="sell3">FPO / Cooperative</span></strong>
+<span data-i18n="sell3p">Aggregate produce to improve bargaining power.</span>
+</div>
+</div>
+</div>
+</div>
+</section>
+
+
+<!-- CALCULATOR -->
+<section id="calculator" class="section">
+<div class="section-head">
+<div>
+<h2 data-i18n="calcTitle">🧮 Farm Earnings Calculator</h2>
+<p data-i18n="calcSub">Enter your crop, quantity, selling price and costs to estimate total income and profit.</p>
+</div>
+</div>
+
+<div class="card calculator">
+<div>
+<div class="form-grid">
+
+<div class="field">
+<label data-i18n="calcCrop">Crop</label>
+<select id="calcCrop">
+<option value="Maize">🌽 Maize</option>
+<option value="Paddy">🌾 Paddy</option>
+<option value="Arhar">🌱 Arhar</option>
+<option value="Wheat">🌾 Wheat</option>
+<option value="Soybean">🫘 Soybean</option>
+<option value="Groundnut">🥜 Groundnut</option>
+<option value="Chickpea">🫘 Chickpea</option>
+<option value="Mustard">🌼 Mustard</option>
+</select>
+</div>
+
+<div class="field">
+<label data-i18n="calcQty">Quantity (quintal)</label>
+<input id="calcQty" type="number" value="22" min="0" step=".1">
+</div>
+
+<div class="field">
+<label data-i18n="calcPrice">Selling price (₹/quintal)</label>
+<input id="calcPrice" type="number" value="2100" min="0">
+</div>
+
+<div class="field">
+<label data-i18n="calcCost">Total farming cost (₹)</label>
+<input id="calcCost" type="number" value="18000" min="0">
+</div>
+
+<div class="field full">
+<label data-i18n="calcTransport">Transport & selling cost (₹)</label>
+<input id="calcTransport" type="number" value="2500" min="0">
+</div>
+
+</div>
+<button class="analyze" onclick="calculateEarnings()" data-i18n="calcButton">
+Calculate My Earnings
+</button>
+</div>
+
+<div>
+<div class="calc-results">
+<div class="calc-result">
+<small data-i18n="calcRevenue">Gross income</small>
+<b id="calcRevenue">₹46,200</b>
+</div>
+<div class="calc-result">
+<small data-i18n="calcTotalCost">Total cost</small>
+<b id="calcTotalCost">₹20,500</b>
+</div>
+<div class="calc-result profit">
+<small data-i18n="calcNet">Net profit</small>
+<b id="calcNet">₹25,700</b>
+</div>
+<div class="calc-result">
+<small data-i18n="calcMargin">Profit margin</small>
+<b id="calcMargin">55.6%</b>
+</div>
+</div>
+
+<div style="margin-top:14px;padding:14px;border-radius:13px;background:#f5faf5">
+<strong id="calcAdvice">Tip: Compare net profit, not only the highest market price.</strong>
+</div>
+</div>
+</div>
+</section>
+
+<!-- DISTRICTS -->
+<section id="districts" class="section">
+<div class="section-head">
+<div>
+<h2 data-i18n="districtTitle">🗺️ All 24 Jharkhand Districts</h2>
+<p data-i18n="districtSub">Select any district to personalize the farm analysis.</p>
+</div>
+</div>
+
+<div class="grid">
+<div class="card">
+<div id="districtGrid" class="district-grid"></div>
+</div>
+<div class="card">
+<div class="map">
+<b>JHARKHAND</b>
+<div class="dot" style="left:46%;top:43%"></div>
+<div class="dot" style="left:62%;top:31%"></div>
+<div class="dot" style="left:32%;top:56%"></div>
+<div class="dot" style="left:69%;top:56%"></div>
+</div>
+<h3 id="districtTitle2">Ranchi</h3>
+<p id="districtAdvice"></p>
+</div>
+</div>
+</section>
+
+<!-- PROFIT -->
+<section id="profit" class="section">
+<div class="section-head">
+<div>
+<h2 data-i18n="profitTitle">💰 Profit Comparison</h2>
+<p data-i18n="profitSub">Estimates based on regional data and market averages.</p>
+</div>
+</div>
+
+<div class="card">
+<div style="overflow:auto">
+<table class="table">
+<thead>
+<tr>
+<th data-i18n="cropH">Crop</th>
+<th data-i18n="suitH">Suitability</th>
+<th data-i18n="yieldH">Yield</th>
+<th data-i18n="costH">Est. Cost</th>
+<th data-i18n="revH">Revenue</th>
+<th data-i18n="profitH">Profit / acre</th>
+</tr>
+</thead>
+<tbody id="profitRows"></tbody>
+</table>
+</div>
+</div>
+</section>
+
+<!-- FEATURES -->
+<section class="section">
+<div class="section-head">
+<div>
+<h2 data-i18n="featureTitle">🌾 Farmer-first features</h2>
+<p data-i18n="featureSub">A strong foundation for modern agriculture.</p>
+</div>
+</div>
+
+<div class="features">
+<div class="feature">
+<div class="ico">🧪</div>
+<h3 data-i18n="f1">Soil Health</h3>
+<p data-i18n="f1p">NPK, pH and moisture inputs create a soil suitability profile.</p>
+</div>
+<div class="feature">
+<div class="ico">🌦️</div>
+<h3 data-i18n="f2">Weather Intelligence</h3>
+<p data-i18n="f2p">Live weather signals to improve rainfall and temperature planning.</p>
+</div>
+<div class="feature">
+<div class="ico">📷</div>
+<h3 data-i18n="f3">Land & Disease Vision</h3>
+<p data-i18n="f3p">Visual signals combined with agronomic and weather data.</p>
+</div>
+<div class="feature">
+<div class="ico">🗣️</div>
+<h3 data-i18n="f4">Hindi Voice</h3>
+<p data-i18n="f4p">Voice-first assistance makes the platform accessible to everyone.</p>
+</div>
+</div>
+</section>
+</main>
+
+
+<footer>
+<div class="foot">
+<div>
+<strong>🌱 KrishiMitra</strong><br>
+<span class="tiny" data-i18n="footer1">Advanced crop decision support system</span>
+</div>
+<div class="tiny" data-i18n="footer2">
+Data is updated regularly based on local APMC trends and weather signals.
+</div>
+</div>
+</footer>
+
+<div id="toast"></div>
+
+<!-- CHATBOX -->
+<button class="chat-toggle" type="button" onclick="toggleChat()" aria-label="Open farming assistant">💬</button>
+
+<aside id="chatbox" class="chatbox" aria-label="Farming assistant">
+<div class="chat-head">
+<div><strong>Digital Farm Assistant</strong><small>Live Expert Guidance</small></div>
+<button type="button" class="chat-close" onclick="toggleChat()" aria-label="Close chat">×</button>
+</div>
+<div id="chatMessages" class="chat-messages">
+<div class="chat-message bot">Hello! Ask me about nutrients, crop choice, moisture, or market prices.</div>
+</div>
+<div class="chat-compose">
+<input id="chatInput" type="text" placeholder="Ask a farm question..." aria-label="Ask the farm assistant">
+<button type="button" onclick="sendChatMessage()" aria-label="Send message">➤</button>
+</div>
+</aside>
+
+<script src="sadf.js"></script>
+</body>
+</html>
