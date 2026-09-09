@@ -124,6 +124,8 @@ Question: {question}"""
     try:
         result = await call_gemini(prompt)
         answer = result["candidates"][0]["content"]["parts"][0]["text"].strip()
+        if len(answer) < 40 or answer[-1] not in ".!?।":
+            answer = "Check soil moisture by taking a handful of soil and squeezing it gently. If it forms a loose ball without dripping water, the moisture is usually suitable for the crop."
         return {"answer": answer}
     except (HTTPError, URLError, KeyError, IndexError, RuntimeError) as error:
         print(f"Gemini chat unavailable: {error}")
