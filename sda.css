@@ -621,18 +621,20 @@ footer {
   display: flex;
   flex-direction: column;
   gap: 8px;
-  max-height: 230px;
+  max-height: 340px;
   padding: 14px;
   overflow-y: auto;
 }
 
 .chat-message {
-  width: fit-content;
+  width: auto;
   max-width: 88%;
   padding: 9px 11px;
   border-radius: 12px;
   font-size: 13px;
   line-height: 1.4;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
 }
 
 .chat-message.bot {

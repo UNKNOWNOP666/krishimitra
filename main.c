@@ -93,10 +93,10 @@ async def call_gemini(prompt: str):
 
     request_body = json.dumps({
         "contents": [{"parts": [{"text": prompt}]}],
-        "generationConfig": {"temperature": 0.4, "maxOutputTokens": 180}
+        "generationConfig": {"temperature": 0.4, "maxOutputTokens": 512}
     }).encode("utf-8")
     request = Request(
-        "https://generativelanguage.googleapis.com/v1beta/models/gemini-3.6-flash:generateContent",
+        "https://generativelanguage.googleapis.com/v1beta/models/gemini-flash-latest:generateContent",
         data=request_body,
         headers={"Content-Type": "application/json", "x-goog-api-key": api_key},
         method="POST"
