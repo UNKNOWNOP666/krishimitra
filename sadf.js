@@ -1,5 +1,5 @@
 // --- CONFIGURATION ---
-const API_BASE = window.KRISHIMITRA_API_BASE || "https://krishimitra-api-02cf.onrender.com";
+const API_BASE = window.KRISHIMITRA_API_BASE || "";
 
 // --- TRANSLATION DICTIONARY ---
 const translations = {
